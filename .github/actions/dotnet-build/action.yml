@@ -1,0 +1,23 @@
+name: dotnet-build
+description: "Restore Packages and build"
+
+inputs:
+  build-number:
+    description: The build version
+
+runs:
+  using: "composite"
+  steps:
+    - name: Restore dependencies
+      shell: bash
+      working-directory: ${{github.workspace}}/src
+      run: dotnet restore --no-cache -v m      
+
+
+    - name: Build
+      shell: bash
+      working-directory: ${{github.workspace}}/src
+      run: dotnet build --no-restore -c Release /property:Version=${{inputs.build-number}} 
+
+
+  
