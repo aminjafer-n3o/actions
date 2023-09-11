@@ -5,9 +5,6 @@ inputs:
   projects:
     description: The json array list of projects
     required: true
-  build-number:
-    description: The project build number
-    required: true
 
 runs:
   using: "composite"
@@ -21,5 +18,5 @@ runs:
         for project in $listOfProjects
         do
           echo "Packing project: $project"
-          dotnet pack "src/$project/$project.csproj" --version-suffix ${{ inputs.build-number }}
-        done           
+          dotnet pack "src/$project/$project.csproj" 
+        done            

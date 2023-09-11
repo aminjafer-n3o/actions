@@ -1,10 +1,6 @@
 name: dotnet-build
 description: "Restore Packages and build"
 
-inputs:
-  build-number:
-    description: The build version
-
 runs:
   using: "composite"
   steps:
@@ -13,11 +9,13 @@ runs:
       working-directory: ${{github.workspace}}/src
       run: dotnet restore --no-cache -v m      
 
-
     - name: Build
       shell: bash
       working-directory: ${{github.workspace}}/src
-      run: dotnet build --no-restore -c Release /property:Version=${{inputs.build-number}} 
+      run: |        
+        packageVersion=$(date +"%Y.%m.%d")-${{ github.run_number }}     
+        echo "Package Version: $packageVersion"
+        dotnet build --no-restore -c Release /property:Version=$packageVersion
 
 
   
