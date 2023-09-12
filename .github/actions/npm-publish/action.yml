@@ -4,10 +4,7 @@ description: "Packing Dotnet project"
 inputs:
   client-directories:
     description: The json array list of client directories
-    required: true
-  repository-owner: 
-    description: Owner username of the repository that run the main-ci.yaml        
-    required: true
+    required: true  
   access-token:
     description: the access token from the calling workflow
     required: true
@@ -23,7 +20,7 @@ runs:
         for packageDirectory in $listOfDirectories        
         do
           packageVersion=$(date +"%Y.%m.%d")-${{ github.run_number }}                 
-          ( cd $packageDirectory; npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@${{ inputs.repository-owner }}:registry=https://npm.pkg.github.com" >> .npmrc; ls -a; npm publish)                                 
+          ( cd $packageDirectory; npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@${{ github.repository-owner }}:registry=https://npm.pkg.github.com" >> .npmrc; ls -a; npm publish)                                 
         done
       working-directory: ${{github.workspace}}
       env: 
