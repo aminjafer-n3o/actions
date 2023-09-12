@@ -20,7 +20,7 @@ runs:
         for packageDirectory in $listOfDirectories        
         do
           packageVersion=$(date +"%Y.%m.%d")-${{ github.run_number }}                 
-          ( cd $packageDirectory; npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@${{ github.repository-owner }}:registry=https://npm.pkg.github.com" >> .npmrc; ls -a; npm publish)                                 
+          ( cd $packageDirectory; npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@aminjafer-n3o:registry=https://npm.pkg.github.com" >> .npmrc; ls -a; npm publish)                                 
         done
       working-directory: ${{github.workspace}}
       env: 

@@ -22,7 +22,7 @@ runs:
         do
           echo "Pushing project: $project"
           echo $PWD
-          (cd $project; dotnet nuget push **/*.nupkg -k ${{inputs.access-token}} --source "https://nuget.pkg.github.com/${{ github.repository-owner }}/index.json" --skip-duplicate )          
+          (cd $project; dotnet nuget push **/*.nupkg -k ${{inputs.access-token}} --source "https://nuget.pkg.github.com/aminjafer-n3o/index.json" --skip-duplicate )          
         done                 
       
       
