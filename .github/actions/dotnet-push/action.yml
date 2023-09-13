@@ -23,6 +23,20 @@ runs:
           echo "Pushing project: $project"
           echo $PWD
           (cd $project; dotnet nuget push **/*.nupkg -k ${{inputs.access-token}} --source "https://nuget.pkg.github.com/aminjafer-n3o/index.json" --skip-duplicate )          
-        done                 
+        done    
+
+    - name: Push Nuget packages to Azure Artifacts 
+      shell: bash
+      working-directory: ${{github.workspace}}/src
+      run: |
+        listOfProjects=$(echo '${{ inputs.projects }}' | jq -c -r '.[]')
+        echo $listOfProjects        
+        for project in $listOfProjects
+        do
+          echo "Pushing project: $project"
+          echo $PWD
+          (cd $project; dotnet nuget push --api-key AzureArtifacts **/*.nupkg --skip-duplicate )          
+        done   
+
       
       
