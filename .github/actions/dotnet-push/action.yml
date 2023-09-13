@@ -5,8 +5,11 @@ inputs:
   projects:
     description: The json array list of projects
     required: true  
-  azure-access-token: 
+  access-token: 
     description: 'The personal Access token passed from the calling flow'
+    required: true
+  azure-access-token: 
+    description: 'The Azure Access token passed from the calling flow'
     required: true
 
 runs:
