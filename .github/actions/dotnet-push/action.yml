@@ -5,7 +5,7 @@ inputs:
   projects:
     description: The json array list of projects
     required: true  
-  access-token: 
+  azure-access-token: 
     description: 'The personal Access token passed from the calling flow'
     required: true
 
@@ -20,8 +20,7 @@ runs:
         echo $listOfProjects        
         for project in $listOfProjects
         do
-          echo "Pushing project: $project"
-          echo $PWD
+          echo "Pushing project: $project"          
           (cd $project; dotnet nuget push **/*.nupkg -k ${{inputs.access-token}} --source "https://nuget.pkg.github.com/aminjafer-n3o/index.json" --skip-duplicate )          
         done    
 
@@ -29,13 +28,11 @@ runs:
       shell: bash
       working-directory: ${{github.workspace}}/src
       run: |
-        listOfProjects=$(echo '${{ inputs.projects }}' | jq -c -r '.[]')
-        echo $listOfProjects        
+        listOfProjects=$(echo '${{ inputs.projects }}' | jq -c -r '.[]')        
         for project in $listOfProjects
         do
-          echo "Pushing project: $project"
-          echo $PWD
-          (cd $project; dotnet nuget push --api-key AzureArtifacts **/*.nupkg --skip-duplicate )          
+          echo "Pushing project: $project"          
+          (cd $project; dotnet nuget push --api-key ${{ inputs.azure-access-token }} **/*.nupkg --skip-duplicate )          
         done   
 
       
