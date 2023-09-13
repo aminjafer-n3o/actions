@@ -8,13 +8,13 @@ inputs:
 runs:
   using: "composite"
   steps: 
-    - name: dotnet tool Install n3o
+    - name: dotnet tool Install n3o-tool
       shell: bash
       run: |
         dotnet new tool-manifest
-        dotnet tool install --no-cache n3o
+        dotnet tool install --no-cache n3o-tool
 
     - name: n3o prepack
       shell: bash      
       run: |
-        dotnet tool run n3o prepack  
+        dotnet tool run n3o-tool prepack  
