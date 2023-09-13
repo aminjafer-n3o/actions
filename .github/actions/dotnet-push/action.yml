@@ -35,7 +35,7 @@ runs:
         for project in $listOfProjects
         do
           echo "Pushing project: $project"          
-          (cd $project; dotnet nuget push --api-key ${{ inputs.azure-access-token }} **/*.nupkg --skip-duplicate )          
+          (cd $project; dotnet nuget push **/*.nupkg --skip-duplicate --api-key ${{ inputs.azure-access-token }} --source "https://pkgs.dev.azure.com/n3oltd/_packaging/Feed/nuget/v3/index.json" )          
         done   
 
       
