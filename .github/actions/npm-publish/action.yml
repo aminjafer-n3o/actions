@@ -23,7 +23,7 @@ runs:
         for packageDirectory in $listOfDirectories        
         do
           packageVersion=$(date +"%Y.%m.%d")-${{ github.run_number }}                 
-          ( cd $packageDirectory; sed -i 's/"name": "@aminjafer-n3o/"name": "@aminjafer/g' package.json;  npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@aminjafer-n3o:registry=https://npm.pkg.github.com" >> .npmrc; npm publish)                                           
+          ( cd $packageDirectory; npm version $packageVersion; echo "//npm.pkg.github.com/:_authToken=${{ inputs.access-token }}" >> .npmrc; echo "@aminjafer-n3o:registry=https://npm.pkg.github.com" >> .npmrc; npm publish)                                           
         done
       working-directory: ${{github.workspace}}
       env: 
