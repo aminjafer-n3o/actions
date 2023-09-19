@@ -18,5 +18,5 @@ runs:
         for project in $listOfProjects
         do
           echo "Packing project: $project"
-          dotnet pack --no-build -v m "src/$project/$project.csproj" /p:Version=$(echo $(date +"%Y.%m.%d")-${{ github.run_number }})
+          dotnet pack --no-build --configuration Release -v m "src/$project/$project.csproj" /p:Version=$(echo $(date +"%Y.%m.%d")-${{ github.run_number }})
         done            
