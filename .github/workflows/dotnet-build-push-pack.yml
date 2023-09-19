@@ -1,0 +1,69 @@
+name: Buil 
+
+on: 
+  workflow_call:
+    inputs: 
+      nuget-packages:
+        description: 'List of Nuget packages to create'
+        required: true
+        type: string
+      npm-packages:
+        description: 'List of NPM packages to create'
+        required: true
+        type: string
+    # secrets: 
+    #   access-token: 
+    #     description: 'The personal Access token passed from the calling flow'
+    #     required: true
+
+jobs:
+  build:        
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: Setup Node
+        if: inputs.npm-packages != ''
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '18.13.0'
+
+      - name: n3o tool install and prepack
+        uses: aminjafer-n3o/actions/.github/actions/n3o-install-prepack@main        
+
+      - name: dotnet build
+        uses: aminjafer-n3o/actions/.github/actions/dotnet-build@main
+        with:
+          access-token: ${{ secrets.NUGET_PAT }}
+      
+      - name: dotnet pack all projects
+        uses: aminjafer-n3o/actions/.github/actions/dotnet-pack@main
+        with:          
+          projects: ${{ inputs.nuget-packages }}          
+
+      - name: dotnet push all nuget packages
+        uses: aminjafer-n3o/actions/.github/actions/dotnet-push@main
+        with:
+          projects: ${{ inputs.nuget-packages }}
+          access-token: ${{ secrets.NUGET_PAT }} 
+      
+      - name: npm publish clients packages
+        if: inputs.npm-packages != ''
+        uses: aminjafer-n3o/actions/.github/actions/npm-publish@main
+        with: 
+          client-directories: ${{ inputs.npm-packages }}  
+          access-token: ${{ secrets.NUGET_PAT }} 
+          azure-feed-token: ${{ secrets.AZURE_PACKAGES_FEED_PAT }} 
+          
+        
+
+      
+
+      
