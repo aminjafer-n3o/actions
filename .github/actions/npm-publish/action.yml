@@ -1,5 +1,5 @@
-name: dotnet-pack
-description: "Packing Dotnet project"
+name: npm publish 
+description: "Publishing Npm Packages"
 
 inputs:
   client-directories:
