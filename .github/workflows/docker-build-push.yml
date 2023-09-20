@@ -11,17 +11,9 @@ on:
         type: string
         required: true
 
-      webapi-build-args:
-        type: string
-        required: false
-
       targets-webworker:
         type: string
-        required: true
-
-      webworker-build-args:
-        type: string
-        required: false
+        required: true      
 
 jobs:
   job1:
@@ -67,7 +59,10 @@ jobs:
           context: ./src
           target: final
           file: ${{ inputs.docker-file }}
-          build-args: ${{ inputs.webapi-build-args }}
+          build-args: |
+            "PROJECT:${{inputs.targets-webapi}}"
+            "FEED_URL:"
+            "PAT:${{secrets.NUGET_PAT}}"
           push: true
           tags: ${{ steps.meta-webapi.outputs.tags }}
           labels: ${{ steps.meta-webapi.outputs.labels }}
@@ -92,7 +87,10 @@ jobs:
           context: ./src
           target: final
           file: ${{ inputs.docker-file }}
-          build-args: ${{ inputs.webworker-build-args }}
+          build-args: |
+            "PROJECT:${{inputs.targets-webworker}}"
+            "FEED_URL:"
+            "PAT:${{secrets.NUGET_PAT}}"
           push: true
           tags: ${{ steps.meta-webworker.outputs.tags }}
           labels: ${{ steps.meta-webworker.outputs.labels }}
