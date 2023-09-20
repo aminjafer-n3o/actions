@@ -40,7 +40,7 @@ jobs:
           args: -O ${{ inputs.docker-file }} https://raw.githubusercontent.com/aminjafer-n3o/actions/main/docker/${{ inputs.docker-file }}
 
       - id: meta-webapi
-        name: Set tags
+        name: Set tags Web Api
         if: inputs.targets-webapi != ''
         run: |
           DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webapi }} | tr '[:upper:]' '[:lower:]' | tr "." "-")
@@ -68,7 +68,7 @@ jobs:
           labels: ${{ steps.meta-webapi.outputs.labels }}
 
       - id: meta-webworker
-        name: Set tags
+        name: Set tags Web Worker
         if: inputs.targets-webworker != ''
         run: |
           DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webworker }} | tr '[:upper:]' '[:lower:]' | tr "." "-")
