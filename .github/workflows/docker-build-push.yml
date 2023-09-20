@@ -43,7 +43,7 @@ jobs:
         name: Set tags
         if: inputs.targets-webapi != ''
         run: |
-          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webapi }} | tr "." "-")
+          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webapi }} | tr '[:upper:]' '[:lower:]' | tr "." "-")
           DOCKER_IMAGE=n3oltd.azurecr.io/$DOCKER_IMAGE_NAME
           NOW=$(date +'%Y-%m-%d')
           SHA=$(git rev-parse --short HEAD)
@@ -61,7 +61,7 @@ jobs:
           file: ${{ inputs.docker-file }}
           build-args: |
             "PROJECT:${{inputs.targets-webapi}}"
-            "FEED_URL:"
+            "FEED_URL:https://nuget.pkg.github.com/aminjafer-n3o/index.json"
             "PAT:${{secrets.NUGET_PAT}}"
           push: true
           tags: ${{ steps.meta-webapi.outputs.tags }}
@@ -71,7 +71,7 @@ jobs:
         name: Set tags
         if: inputs.targets-webworker != ''
         run: |
-          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webworker }} | tr "." "-")
+          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webworker }} | tr '[:upper:]' '[:lower:]' | tr "." "-")
           DOCKER_IMAGE=n3oltd.azurecr.io/$DOCKER_IMAGE_NAME
           NOW=$(date +'%Y-%m-%d')
           SHA=$(git rev-parse --short HEAD)
@@ -89,7 +89,7 @@ jobs:
           file: ${{ inputs.docker-file }}
           build-args: |
             "PROJECT:${{inputs.targets-webworker}}"
-            "FEED_URL:"
+            "FEED_URL:https://nuget.pkg.github.com/aminjafer-n3o/index.json"
             "PAT:${{secrets.NUGET_PAT}}"
           push: true
           tags: ${{ steps.meta-webworker.outputs.tags }}
