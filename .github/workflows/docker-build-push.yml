@@ -1,0 +1,98 @@
+name: 'docker-build-push'
+
+on:
+  workflow_call:
+    inputs:
+      docker-file:
+        type: string
+        required: true
+
+      targets-webapi:
+        type: string
+        required: true
+
+      webapi-build-args:
+        type: string
+        required: false
+
+      targets-webworker:
+        type: string
+        required: true
+
+      webworker-build-args:
+        type: string
+        required: false
+
+jobs:
+  job1:
+    name: ubuntu-latest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to ACR
+        uses: docker/login-action@v1
+        with:
+          registry: n3oltd.azurecr.io
+          username: ${{ secrets.acr-username }}
+          password: ${{ secrets.acr-password }}
+
+      - name: Fetch Dockerfile
+        uses: wei/wget@v1
+        with:
+          args: -O ${{ inputs.docker-file }} https://raw.githubusercontent.com/n3oltd/actions/main/docker/${{ inputs.docker-file }}
+
+      - id: meta-webapi
+        name: Set tags
+        if: inputs.targets-webapi != ''
+        run: |
+          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webapi }} | tr "." "-")
+          DOCKER_IMAGE=n3oltd.azurecr.io/$DOCKER_IMAGE_NAME
+          NOW=$(date +'%Y-%m-%d')
+          SHA=$(git rev-parse --short HEAD)
+          VERSION="$NOW-$SHA"
+          TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:edge,${DOCKER_IMAGE}:latest"
+          echo ::set-output name=tags::${TAGS}
+
+      - name: Build and push webapi
+        uses: docker/build-push-action@v2
+        if: inputs.targets-webapi != ''
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: ./src
+          target: final
+          file: ${{ inputs.docker-file }}
+          build-args: ${{ inputs.webapi-build-args }}
+          push: true
+          tags: ${{ steps.meta-webapi.outputs.tags }}
+          labels: ${{ steps.meta-webapi.outputs.labels }}
+
+      - id: meta-webworker
+        name: Set tags
+        if: inputs.targets-webworker != ''
+        run: |
+          DOCKER_IMAGE_NAME=$(echo ${{ inputs.targets-webworker }} | tr "." "-")
+          DOCKER_IMAGE=n3oltd.azurecr.io/$DOCKER_IMAGE_NAME
+          NOW=$(date +'%Y-%m-%d')
+          SHA=$(git rev-parse --short HEAD)
+          VERSION="$NOW-$SHA"
+          TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:edge,${DOCKER_IMAGE}:latest"
+          echo ::set-output name=tags::${TAGS}
+  
+      - name: Build and push webworker
+        uses: docker/build-push-action@v2
+        if: inputs.targets-webworker != ''
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: ./src
+          target: final
+          file: ${{ inputs.docker-file }}
+          build-args: ${{ inputs.webworker-build-args }}
+          push: true
+          tags: ${{ steps.meta-webworker.outputs.tags }}
+          labels: ${{ steps.meta-webworker.outputs.labels }}
